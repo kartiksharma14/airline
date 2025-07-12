@@ -2,8 +2,11 @@ package com.example.airline;
 
 import com.example.airline.model.Customer;
 import com.example.airline.model.Flight;
+import com.example.airline.model.User;
 import com.example.airline.repository.CustomerRepository;
 import com.example.airline.repository.FlightRepository;
+import com.example.airline.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -13,10 +16,17 @@ import java.time.LocalDateTime;
 public class DataLoader implements CommandLineRunner {
     private final FlightRepository flightRepository;
     private final CustomerRepository customerRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public DataLoader(FlightRepository flightRepository, CustomerRepository customerRepository) {
+    public DataLoader(FlightRepository flightRepository,
+                     CustomerRepository customerRepository,
+                     UserRepository userRepository,
+                     PasswordEncoder passwordEncoder) {
         this.flightRepository = flightRepository;
         this.customerRepository = customerRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -33,5 +43,11 @@ public class DataLoader implements CommandLineRunner {
         customer.setName("John Doe");
         customer.setEmail("john@example.com");
         customerRepository.save(customer);
+
+        User user = new User();
+        user.setUsername("john");
+        user.setEmail("john@example.com");
+        user.setPassword(passwordEncoder.encode("password"));
+        userRepository.save(user);
     }
 }
